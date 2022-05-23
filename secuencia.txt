@@ -1,0 +1,4 @@
+~~~ Kleines Program in JSBach ~~~
+Main |:
+    <!> 1 + "hola"
+:|
