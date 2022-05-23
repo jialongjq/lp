@@ -1,4 +1,8 @@
 ~~~ Kleines Program in JSBach ~~~
 Main |:
-    <!> 1 + "hola"
+    Suma 3 2
+:|
+
+Suma a b |:
+    <!> a + b
 :|

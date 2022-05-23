@@ -20,7 +20,7 @@ expressio : '(' expressio ')'
     	  | NUMERO | VARIABLE | TEXT
     	  ;
 
-invocacio : ID (VARIABLE | NUMERO)* ;
+invocacio : ID expressio* ;
 
 ESCRIPTURA : '<!>' ;
 LECTURA : '<?>' ;

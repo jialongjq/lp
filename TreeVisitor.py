@@ -14,12 +14,14 @@ class TreeVisitor(jsbachVisitor):
 
     def visitRoot(self, ctx):
         l = list(ctx.getChildren())
-        for funcio in l:
-            self.visit(funcio)
+        for procediment in l:
+            self.visit(procediment)
         self.executar = True
         if not 'Main' in self.bloc:
             raise Exception("No s'ha definit el procediment 'Main'!")
+        self.pila.append({})
         self.visit(self.bloc['Main'])
+        self.pila.pop()
 
     def visitProcediment(self, ctx):
         if not self.executar:
@@ -30,17 +32,15 @@ class TreeVisitor(jsbachVisitor):
             i = 1
             while l[i].getText() != '|:':
                 self.parametres[nom].append(l[i].getText())
-                
+                i += 1
             
         else:
-            self.pila.append({})
             l = list(ctx.getChildren())
             for i in range(1, len(l)):
                 if l[i].getText() == '|:':
                     for j in range(i+1, len(l)-1):
                         self.visit(l[j])
                     break
-            self.pila.pop()
                 
 
     def visitInstruccio(self, ctx):
@@ -128,12 +128,14 @@ class TreeVisitor(jsbachVisitor):
         nom = l[0].getText()
         if not nom in self.bloc:
             raise Exception('El procediment %s no esta definit!' % nom)
-        diccionari = {}
         if len(l)-1 != len(self.parametres[nom]):
             raise Exception('El nombre de parametres no coincideix!')
+        diccionari = {}
         for i in range(1, len(l)):
-            diccionari[self.parametres[nom][i-1]]= self.visit(l[i])
+            diccionari[self.parametres[nom][i-1]] = self.visit(l[i])
         self.pila.append(diccionari)
+        print(self.pila)
         self.visit(self.bloc[nom])
+        self.pila.pop()
 
 
