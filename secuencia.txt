@@ -1,8 +1,11 @@
-~~~ Kleines Program in JSBach ~~~
 Main |:
-    Suma 3 2
-:|
-
-Suma a b |:
-    <!> a + b
+    l <- {1 2 3 4 5}
+    l2 <- l
+    <!> l2
+    l << 6
+    <!> l2
+    <!> l
+    n <- 5
+    m <- n + 5
+    <!> m
 :|

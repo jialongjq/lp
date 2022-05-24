@@ -14,18 +14,23 @@ class jsbachVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by jsbachParser#instruccio.
-    def visitInstruccio(self, ctx:jsbachParser.InstruccioContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by jsbachParser#procediment.
     def visitProcediment(self, ctx:jsbachParser.ProcedimentContext):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by jsbachParser#instruccio.
+    def visitInstruccio(self, ctx:jsbachParser.InstruccioContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by jsbachParser#assignacio.
     def visitAssignacio(self, ctx:jsbachParser.AssignacioContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by jsbachParser#lectura.
+    def visitLectura(self, ctx:jsbachParser.LecturaContext):
         return self.visitChildren(ctx)
 
 
@@ -39,8 +44,43 @@ class jsbachVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by jsbachParser#lectura.
-    def visitLectura(self, ctx:jsbachParser.LecturaContext):
+    # Visit a parse tree produced by jsbachParser#invocacio.
+    def visitInvocacio(self, ctx:jsbachParser.InvocacioContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by jsbachParser#condicional.
+    def visitCondicional(self, ctx:jsbachParser.CondicionalContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by jsbachParser#iteracio.
+    def visitIteracio(self, ctx:jsbachParser.IteracioContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by jsbachParser#afegit.
+    def visitAfegit(self, ctx:jsbachParser.AfegitContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by jsbachParser#tall.
+    def visitTall(self, ctx:jsbachParser.TallContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by jsbachParser#mida.
+    def visitMida(self, ctx:jsbachParser.MidaContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by jsbachParser#consulta.
+    def visitConsulta(self, ctx:jsbachParser.ConsultaContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by jsbachParser#llista.
+    def visitLlista(self, ctx:jsbachParser.LlistaContext):
         return self.visitChildren(ctx)
 
 
@@ -49,8 +89,13 @@ class jsbachVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by jsbachParser#invocacio.
-    def visitInvocacio(self, ctx:jsbachParser.InvocacioContext):
+    # Visit a parse tree produced by jsbachParser#condicio.
+    def visitCondicio(self, ctx:jsbachParser.CondicioContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by jsbachParser#text.
+    def visitText(self, ctx:jsbachParser.TextContext):
         return self.visitChildren(ctx)
 
 

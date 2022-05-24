@@ -1,26 +1,45 @@
 grammar jsbach;
 root : procediment * EOF ;
 
-instruccio : (assignacio | escriptura | lectura | reproduccio | invocacio) ;
-
 procediment : ID VARIABLE* '|:' instruccio* ':|';
 
-assignacio : VARIABLE ASSIGNACIO expressio ;
+instruccio : (assignacio | lectura | escriptura | reproduccio | invocacio | condicional | iteracio | afegit | tall) ;
 
-escriptura : ESCRIPTURA expressio ;
+assignacio : VARIABLE ASSIGNACIO (VARIABLE | expressio | llista | text | consulta | mida);
+
+lectura : LECTURA VARIABLE ;
+
+escriptura : ESCRIPTURA (VARIABLE | expressio | text | llista)+ ;
 
 reproduccio : REPRODUCCIO '{' NOTA* '}' ;
 
-lectura : LECTURA VARIABLE ;
+invocacio : ID expressio* ;
+
+condicional : 'if' condicio '|:' instruccio+ ':|' ('else' '|:' instruccio+ ':|')?;
+
+iteracio : 'while' condicio '|:' instruccio+ ':|' ;
+
+afegit : VARIABLE '<<' expressio;
+
+tall : '8<' VARIABLE '[' expressio ']' ;
+
+mida : '#' VARIABLE ;
+
+consulta : VARIABLE '[' expressio ']' ;
+
+llista : '{' ENTER* '}';
 
 expressio : '(' expressio ')'
           | expressio (MULTIPLICACIO | DIVISIO | MODUL) expressio
           | expressio (SUMA | RESTA) expressio
           | expressio (MAJOR | MAJORIGUAL | MENOR | MENORIGUAL | IGUAL | DIFERENT) expressio
-    	  | NUMERO | VARIABLE | TEXT
+    	  | ENTER
+    	  | VARIABLE
     	  ;
-
-invocacio : ID expressio* ;
+    	  
+condicio : expressio (MAJOR | MAJORIGUAL | MENOR | MENORIGUAL | IGUAL | DIFERENT) expressio ;
+    	  
+text : TEXT ;
 
 ESCRIPTURA : '<!>' ;
 LECTURA : '<?>' ;
@@ -28,8 +47,9 @@ ASSIGNACIO : '<-' ;
 REPRODUCCIO : '<:>' ;
 
 NOTA : 'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B' ;
-ID : [A-Z] [a-zA-Z\u0080-\u00FF]* ;
-VARIABLE : [a-z]+ ;
+ID : [A-Z] [a-zA-Z\u0080-\u00FF0-9]* ;
+VARIABLE : [a-z] [a-z\u0080-\u00FF0-9]* ;
+ENTER : '-'? NUMERO ;
 NUMERO : [0-9]+ ;
 TEXT : '"' .*? '"' ;
 
