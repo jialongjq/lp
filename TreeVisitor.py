@@ -41,17 +41,18 @@ class TreeVisitor(jsbachVisitor):
                         self.visit(l[j])
                     break
                 
-
     def visitInstruccio(self, ctx):
         l = list(ctx.getChildren())
-        self.visit(l[0])
-        
+        self.visit(l[0])        
 
     def visitAssignacio(self, ctx):
         l = list(ctx.getChildren())
-        token = jsbachParser.symbolicNames[l[2].getSymbol().type]
-        self.pila[-1][l[0].getText()] = self.visit(l[2])
-        print(self.pila)
+        key = l[0].getText()
+        assig = self.visit(l[2])
+        if type(assig) == list:
+            self.pila[-1][key] = assig.copy()
+        else:
+            self.pila[-1][key] = assig
 
     def visitLectura(self, ctx):
         l = list(ctx.getChildren())
@@ -113,94 +114,57 @@ class TreeVisitor(jsbachVisitor):
     def visitExpressio(self, ctx):
         l = list(ctx.getChildren())
         if len(l) == 1:
-            token = jsbachParser.symbolicNames[l[0].getSymbol().type]
-            if token == 'ENTER':
-                return int(l[0].getText())
-            elif token == 'VARIABLE':
-                if l[0].getText() in self.pila[-1]:
-                    return self.pila[-1][l[0].getText()]
-                self.pila[-1][l[0].getText()] = 0
-                return 0
-        else:  # len(l) == 3
+            return self.visit(l[0])
+        else:
             if l[0].getText() == '(':
                 return self.visit(l[1])
             else:
                 var1 = self.visit(l[0])
                 var2 = self.visit(l[2])
+                if type(var1) != int or type(var2) != int:
+                    raise Exception("Operador '%s' no suportat entre variables de tipus %s i %s" % (l[1].getText(), type(var1), type(var2)))
                 token = jsbachParser.symbolicNames[l[1].getSymbol().type]
                 if token == 'SUMA':
-                    #if type(var1) != type(var2):
-                    #    raise Exception("Operador '+' no suportat entre variables de tipus %s i %s" % (type(var1), type(var2)))
                     return var1 + var2
                 elif token == 'RESTA':
-                    #if type(var1) != type(var2) or type(var1) == string:
-                    #    raise Exception("Operador '-' no suportat entre variables de tipus %s i %s" % (type(var1), type(var2)))
                     return var1 - var2
                 elif token == 'MULTIPLICACIO':
-                    #if type(var1) == type(var2) and type(var1) == string:
-                    #    raise Exception("Operador '*' no suportat entre variables de tipus %s i %s" % (type(var1), type(var2)))
                     return var1 * var2
                 elif token == 'DIVISIO':
-                    #if type(var1) != type(var2) or type(var1) == string:
-                    #    raise Exception("Operador '/' no suportat entre variables de tipus %s i %s" % (type(var1), type(var2)))
                     return var1 / var2
                 elif token == 'MODUL':
-                    #if type(var1) != type(var2) or type(var1) == string:
-                    #    raise Exception("Operador '%' no suportat entre variables de tipus %s i %s" % (type(var1), type(var2)))
                     return var1 % var2
                 elif token == 'MAJOR':
-                    #if type(var1) != type(var2):
-                    #    raise Exception("Operador '>' no suportat entre variables de tipus %s i %s" % (type(var1), type(var2)))
                     return 1 if var1 > var2 else 0
                 elif token == 'MAJORIGUAL':
-                    if type(var1) != type(var2):
-                        raise Exception("Operador '>=' no suportat entre variables de tipus %s i %s" % (type(var1), type(var2)))
                     return 1 if var1 >= var2 else 0
                 elif token == 'MENOR':
-                    if type(var1) != type(var2):
-                        raise Exception("Operador '<' no suportat entre variables de tipus %s i %s" % (type(var1), type(var2)))
                     return 1 if var1 < var2 else 0
                 elif token == 'MENORIGUAL':
-                    if type(var1) != type(var2):
-                        raise Exception("Operador '<=' no suportat entre variables de tipus %s i %s" % (type(var1), type(var2)))
                     return 1 if var1 <= var2 else 0
                 elif token == 'IGUAL':
-                    if type(var1) != type(var2):
-                        raise Exception("Operador '=' no suportat entre variables de tipus %s i %s" % (type(var1), type(var2)))
                     return 1 if var1 == var2 else 0
                 elif token == 'DIFERENT':
-                    if type(var1) != type(var2):
-                        raise Exception("Operador '/=' no suportat entre variables de tipus %s i %s" % (type(var1), type(var2)))
                     return 1 if var1 != var2 else 0
         
     def visitCondicio(self, ctx):
         l = list(ctx.getChildren())
         var1 = self.visit(l[0])
         var2 = self.visit(l[2])
+        if type(var1) != int or type(var2) != int:
+            raise Exception("Operador '%s' no suportat entre variables de tipus %s i %s" % (l[1].getText(), type(var1), type(var2)))
         token = jsbachParser.symbolicNames[l[1].getSymbol().type]
         if token == 'MAJOR':
-            if type(var1) != type(var2):
-                raise Exception("Operador '>' no suportat entre variables de tipus %s i %s" % (type(var1), type(var2)))
             return 1 if var1 > var2 else 0
         elif token == 'MAJORIGUAL':
-            if type(var1) != type(var2):
-                raise Exception("Operador '>=' no suportat entre variables de tipus %s i %s" % (type(var1), type(var2)))
             return 1 if var1 >= var2 else 0
         elif token == 'MENOR':
-            if type(var1) != type(var2):
-                raise Exception("Operador '<' no suportat entre variables de tipus %s i %s" % (type(var1), type(var2)))
             return 1 if var1 < var2 else 0
         elif token == 'MENORIGUAL':
-            if type(var1) != type(var2):
-                raise Exception("Operador '<=' no suportat entre variables de tipus %s i %s" % (type(var1), type(var2)))
             return 1 if var1 <= var2 else 0
         elif token == 'IGUAL':
-            if type(var1) != type(var2):
-                raise Exception("Operador '=' no suportat entre variables de tipus %s i %s" % (type(var1), type(var2)))
             return 1 if var1 == var2 else 0
         elif token == 'DIFERENT':
-            if type(var1) != type(var2):
-                raise Exception("Operador '/=' no suportat entre variables de tipus %s i %s" % (type(var1), type(var2)))
             return 1 if var1 != var2 else 0
        
     def visitText(self, ctx):
@@ -209,7 +173,6 @@ class TreeVisitor(jsbachVisitor):
         
     def visitAfegit(self, ctx):
         l = list(ctx.getChildren())
-        token = jsbachParser.symbolicNames[l[0].getSymbol().type]
         nom = l[0].getText()
         if not nom in self.pila[-1]:
             raise Exception("La variable %s no existeix!" % nom)
@@ -219,20 +182,50 @@ class TreeVisitor(jsbachVisitor):
         val = self.visit(l[2])
         llista.append(val)
         self.pila[-1][l[0].getText()] = llista
-            
-        
+
+    def visitTall(self, ctx):
+        l = list(ctx.getChildren())  
+        llista = self.visit(l[1])
+        if type(llista) != list:
+            raise Exception("La variable '%s' no és de tipus 'llista'!" % l[1].getText())
+        index = self.visit(l[3])
+        if index < 1 or index > len(llista):
+            raise Exception("Índex fora de rang!")
+        llista.pop(index-1)          
+
+    def visitMida(self, ctx):
+        l = list(ctx.getChildren())  
+        llista = self.visit(l[1])
+        if type(llista) != list:
+            raise Exception("La variable '%s' no és de tipus 'llista'!" % l[1].getText())
+        return len(llista)
+
+    def visitConsulta(self, ctx):
+        l = list(ctx.getChildren())  
+        llista = self.visit(l[0])
+        if type(llista) != list:
+            raise Exception("La variable '%s' no és de tipus 'llista'!" % l[0].getText())
+        index = self.visit(l[2])
+        if index < 1 or index > len(llista):
+            raise Exception("Índex fora de rang!")
+        return llista[index-1]       
+
     def visitLlista(self, ctx):
         l = list(ctx.getChildren())
-        token = jsbachParser.symbolicNames[l[0].getSymbol().type]
-        if token == 'VARIABLE':
-            if l[0].getText() in self.pila[-1]:
-                if type(self.pila[-1][l[0].getText()]) == list:
-                    return self.pila[-1][l[0].getText()]
-                raise Exception('La variable %s no és una llista!' % l[0].getText())
-            raise Exception('La variable %s no existeix!' % l[0].getText())
-        else:
-            llista = []
-            for i in range(1, len(l)-1):
-                llista.append(int(l[i].getText()))
-            return llista
+        llista = []
+        for i in range(1, len(l)-1):
+            llista.append(int(l[i].getText()))
+        return llista
 
+    # Funcio que facilita l'acces a una variable
+    def visitVariable(self, ctx):
+        l = list(ctx.getChildren())
+        nom = l[0].getText()
+        if not nom in self.pila[-1]:
+            self.pila[-1][nom] = 0
+            return 0
+        return self.pila[-1][nom]
+
+    def visitEnter(self, ctx):
+        l = list(ctx.getChildren())
+        return int(l[0].getText())

@@ -99,5 +99,15 @@ class jsbachVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by jsbachParser#variable.
+    def visitVariable(self, ctx:jsbachParser.VariableContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by jsbachParser#enter.
+    def visitEnter(self, ctx:jsbachParser.EnterContext):
+        return self.visitChildren(ctx)
+
+
 
 del jsbachParser

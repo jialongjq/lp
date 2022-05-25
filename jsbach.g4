@@ -5,11 +5,11 @@ procediment : ID VARIABLE* '|:' instruccio* ':|';
 
 instruccio : (assignacio | lectura | escriptura | reproduccio | invocacio | condicional | iteracio | afegit | tall) ;
 
-assignacio : VARIABLE ASSIGNACIO (VARIABLE | expressio | llista | text | consulta | mida);
+assignacio : VARIABLE ASSIGNACIO (variable | expressio | llista | text | consulta | mida);
 
 lectura : LECTURA VARIABLE ;
 
-escriptura : ESCRIPTURA (VARIABLE | expressio | text | llista)+ ;
+escriptura : ESCRIPTURA (variable | expressio | text | llista | mida | consulta)+ ;
 
 reproduccio : REPRODUCCIO '{' NOTA* '}' ;
 
@@ -19,27 +19,31 @@ condicional : 'if' condicio '|:' instruccio+ ':|' ('else' '|:' instruccio+ ':|')
 
 iteracio : 'while' condicio '|:' instruccio+ ':|' ;
 
-afegit : VARIABLE '<<' expressio;
+afegit : variable '<<' expressio;
 
-tall : '8<' VARIABLE '[' expressio ']' ;
+tall : '8<' variable '[' expressio ']' ;
 
-mida : '#' VARIABLE ;
+mida : '#' variable ;
 
-consulta : VARIABLE '[' expressio ']' ;
+consulta : variable '[' expressio ']' ;
 
-llista : '{' ENTER* '}';
+llista : '{' ENTER* '}' ;
 
 expressio : '(' expressio ')'
           | expressio (MULTIPLICACIO | DIVISIO | MODUL) expressio
           | expressio (SUMA | RESTA) expressio
           | expressio (MAJOR | MAJORIGUAL | MENOR | MENORIGUAL | IGUAL | DIFERENT) expressio
-    	  | ENTER
-    	  | VARIABLE
+    	  | enter
+    	  | variable
     	  ;
     	  
 condicio : expressio (MAJOR | MAJORIGUAL | MENOR | MENORIGUAL | IGUAL | DIFERENT) expressio ;
     	  
 text : TEXT ;
+
+variable : VARIABLE ;
+
+enter : ENTER ;
 
 ESCRIPTURA : '<!>' ;
 LECTURA : '<?>' ;
