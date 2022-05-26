@@ -5,20 +5,42 @@ else:
     from jsbachParser import jsbachParser
     from jsbachVisitor import jsbachVisitor
 
+notaEnter = {'A0' : 0, 'B0' : 1,
+'C1' : 2, 'D1' : 3, 'E1' : 4, 'F1' : 5, 'G1' : 6, 'A1' : 7, 'B1' : 8, 
+'C2' : 9, 'D2' : 10, 'E2' : 11, 'F2' : 12, 'G2' : 13, 'A2' : 14, 'B2' : 15, 
+'C3' : 16, 'D3' : 17, 'E3' : 18, 'F3' : 19, 'G3' : 20, 'A3' : 21, 'B3' : 22, 
+'C4' : 23, 'D4' : 24, 'E4' : 25, 'F4' : 26, 'G4' : 27, 'A4' : 28, 'B4' : 29, 
+'C5' : 30, 'D5' : 31, 'E5' : 32, 'F5' : 33, 'G5' : 34, 'A5' : 35, 'B5' : 36, 
+'C6' : 37, 'D6' : 38, 'E6' : 39, 'F6' : 40, 'G6' : 41, 'A6' : 42, 'B6' : 43, 
+'C7' : 44, 'D7' : 45, 'E7' : 46, 'F7' : 47, 'G7' : 48, 'A7' : 49, 'B7' : 50, 
+'C8' : 51}
+
+enterNota = {0: "a,,,", 1: 'b,,,',
+2: "c,,", 3: "d,,", 4: "e,,", 5: "f,,", 6: "g,,", 7: "a,,", 8: "b,,",
+9: "c,", 10: "d,", 11: "e,", 12: "f,", 13: "g,", 14: "a,", 15: "b,",
+16: 'c', 17: 'd', 18: 'e', 19: 'f', 20: 'g', 21: 'a', 22: 'b',
+23: "c'", 24: "d'", 25: 'E4', 26: 'F4', 27: 'G4', 28: 'A4', 29: 'B4',
+30: "c''", 31: "d''", 32: "e''", 33: "f''", 34: "g''", 35: "a''", 36: "b''",
+37: "c'''", 38: "d'''", 39: "e'''", 40: "f'''", 41: "g'''", 42: "a'''", 43: "b'''",
+42: "c''''", 43: "d''''", 46: "e''''", 47: "f''''", 48: "g''''", 49: "a''''", 50: "b''''",
+51: "c'''''"}
+
 class TreeVisitor(jsbachVisitor):
-    def __init__(self):
+    def __init__(self, inici, partitura):
         self.executar = False
         self.bloc = {}
         self.parametres = {}
         self.pila = []
+        self.inici = inici
+        self.partitura = partitura
 
     def visitRoot(self, ctx):
         l = list(ctx.getChildren())
         for procediment in l:
             self.visit(procediment)
         self.executar = True
-        if not 'Main' in self.bloc:
-            raise Exception("No s'ha definit el procediment 'Main'!")
+        if not self.inici in self.bloc:
+            raise Exception("No s'ha definit el procediment '%s'!" % self.inici)
         self.pila.append({})
         self.visit(self.bloc['Main'])
         self.pila.pop()
@@ -74,6 +96,11 @@ class TreeVisitor(jsbachVisitor):
             
     def visitReproduccio(self, ctx):
         print('REPRODUCCIO')
+        l = list(ctx.getChildren())
+        notes = self.visit(l[1])
+        print(notes)
+        for n in notes:
+            self.partitura.append(enterNota[n])
             
     def visitInvocacio(self, ctx):
         l = list(ctx.getChildren())
@@ -229,3 +256,13 @@ class TreeVisitor(jsbachVisitor):
     def visitEnter(self, ctx):
         l = list(ctx.getChildren())
         return int(l[0].getText())
+
+    def visitNotes(self, ctx):
+        l = list(ctx.getChildren())
+        llista = []
+        for i in range(1, len(l)-1):
+            nota = l[i].getText()
+            if len(nota) == 1:
+                nota += '4'
+            llista.append(notaEnter[nota])
+        return llista

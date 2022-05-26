@@ -11,7 +11,7 @@ lectura : LECTURA VARIABLE ;
 
 escriptura : ESCRIPTURA (variable | expressio | text | llista | mida | consulta)+ ;
 
-reproduccio : REPRODUCCIO '{' NOTA* '}' ;
+reproduccio : REPRODUCCIO notes ;
 
 invocacio : ID expressio* ;
 
@@ -27,7 +27,9 @@ mida : '#' variable ;
 
 consulta : variable '[' expressio ']' ;
 
-llista : '{' ENTER* '}' ;
+llista : '{' ENTER* '}';
+
+notes : '{' NOTA* '}';
 
 expressio : '(' expressio ')'
           | expressio (MULTIPLICACIO | DIVISIO | MODUL) expressio
@@ -50,8 +52,8 @@ LECTURA : '<?>' ;
 ASSIGNACIO : '<-' ;
 REPRODUCCIO : '<:>' ;
 
-NOTA : 'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B' ;
-ID : [A-Z] [a-zA-Z\u0080-\u00FF0-9]* ;
+NOTA : [A-B] '0' | [A-G] [1-7] | 'C' '8' | [A-G];
+ID : [A-Z] [a-zA-Z\u0080-\u00FF0-9_]* ;
 VARIABLE : [a-z] [a-z\u0080-\u00FF0-9]* ;
 ENTER : '-'? NUMERO ;
 NUMERO : [0-9]+ ;
