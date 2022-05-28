@@ -17,7 +17,7 @@ El visitador disposa de tres diccionaris: `notaEnter`, `enterNota` i `notaOutput
 
 Com a atributs privats té un booleà `executar`, un diccionari `bloc`, un diccionari `parametres`, una llista `pila`, un string `inici` i una llista `partitura`.  
 
-Quan s'inicia l'intèrpret, el primer pas que ha de fer és el de guardar el context de tots els procediments presents al programa al diccionari `bloc`, de manera que es pugui fer una visita directa a qualsevol procediment del programa (fet que serà de gran ajuda per fer invocacions), a més dels paràmetres que rep al diccionari `parametres`. Com que això implica una primera visita a totes les regles `procediment`, però sense voler executar cap instrucció, l'atribut booleà `executar` s'inicialitza a `False`, i serveix com a un flag que determina si la visita d'una regla `procediment` és per inicialitzar el diccionari `bloc` o per executar les instruccions del seu context. Una vegada finalitzada la inicialització, el booleà `executar` passarà a ser `True` i es farà una visita al context del procediment indicat a l'string `inici`, que per defecte és `Main`. Abans de fer la invocació al procediment principal, però, s'afegeix un diccionari buit a la llista `pila`, representant el nivell del procediment al qual es crida, i servirà com a taula de símbols per aquest nivell. Quan l'execució d'un procediment finalitza, s'elimina el diccionari de la `pila`. S'aplica el mateix per les invocacions. Durant aquest procés, es poden produir errors quan: un procediment ja ha estat definit, el procediment inicial no s'ha definit o el procediment inicial s'ha definit amb paràmetres.  
+Quan s'inicia l'intèrpret, el primer pas que ha de fer és el de guardar el context de tots els procediments presents al programa al diccionari `bloc`, de manera que es pugui fer una visita directa a qualsevol procediment del programa (fet que serà de gran ajuda per fer invocacions), a més dels paràmetres que rep al diccionari `parametres`. Com que això implica una primera visita a totes les regles `procediment`, però sense voler executar cap instrucció, l'atribut booleà `executar` s'inicialitza a `False`, i serveix com a un flag que determina si la visita d'una regla `procediment` és per inicialitzar el diccionari `bloc` o per executar les instruccions del seu context. Una vegada finalitzada la inicialització, el booleà `executar` passarà a ser `True` i es farà una visita al context del procediment indicat a l'string `inici`, que per defecte és `Main`. Abans de fer la invocació al procediment principal, però, s'afegeix un diccionari buit a la llista `pila`, representant el nivell del procediment al qual es crida, i servirà com a taula de símbols per aquest nivell. Quan l'execució d'un procediment finalitza, s'elimina el diccionari de la `pila`. S'aplica el mateix per les invocacions. Durant aquest procés, es poden produir errors quan: un procediment ja ha estat definit, el procediment inicial no s'ha definit, el procediment inicial s'ha definit amb paràmetres o hi ha noms de paràmetres formals repetits.  
 
 La llista `partitura` es passa per referència des de l'intèrpret i serveix per guardar totes les notes ja traduïdes que es van reproduint durant l'execució del programa.
 
@@ -33,7 +33,7 @@ Els comentaris s'indiquen entre triple titlles (`~~~`). Per exemple, `~~~ Kleine
 
 ## Enters
 
-L'intèrpret JSBach només admet nombres enters. Els operadors amb enters suportats són els aritmètics (`+`, `-`, `*`, `/`, `%`), els quals tenen la mateixa prioritat que en C, i els relacionals (`=`, `/=`, `<`, `>`, `<=`, `>=`), que retornen zero per fals i u per cert. Com que el domini admès és el d'enters, la divisió també és entera.  
+L'intèrpret JSBach només admet nombres enters. Els operadors amb enters suportats són els aritmètics (`+`, `-`, `*`, `/`, `%`), els quals tenen la mateixa prioritat que en C, i els relacionals (`=`, `/=`, `<`, `>`, `<=`, `>=`), que retornen zero per fals i u per cert. Com que el domini admès és el d'enters, la divisió també és entera. Les expressions amb enters també admeten parèntesis i expressions dins d'expressions.  
   
 L'error que es pot produir a l'hora de treballar amb enters es la de divisó per zero.
 
@@ -87,7 +87,37 @@ Main |:
 
 ## Procediments
 
-Els procediments, a diferència de les variables, començen amb una lletra majúscula. També admet l'alfabet alemany, números i el guió baix. Es poden definir amb paràmetres d'entrada i no son res més que conjunts d'instruccions.
+Els procediments, a diferència de les variables, començen amb una lletra majúscula. També admet l'alfabet alemany, números i el guió baix. Es poden definir amb paràmetres d'entrada (sense repetir noms formals) i no son res més que conjunts d'instruccions.
+
+## Assignació
+
+L'assignació `<-` permet fer una assignació de variables, enters, notes, llistes (d'enters o de notes), expressions i operadors de consulta per a llistes a una variable. Com en Python, el tipatge és dinàmic. L'assignació de llistes es fa amb còpies (sense fer aliasing).
+
+## Lectura
+
+La instrucció de lectura `<?>` llegeix un valor enter del canal d'entrada estàndard i l'enmagatzema a la variable especificada.
 
 ## Escriptura
-La instrucció d'escriptura `<!>` admet variables, textos, enters, notes, llistes (d'enters o de notes), expressions i operadors de consulta per a llistes.
+
+La instrucció d'escriptura `<!>` admet variables, textos, enters, notes, llistes (d'enters o de notes), expressions i operadors de consulta per a llistes. Les llistes s'escriuen entre claus amb els elements separats entre espais. En el cas d'escriure múltiples paràmetres, s'escriuen a la mateixa línea separats per espais.
+
+## Reproducció
+
+La instrucció de reproducció `<:>` admet notes, llistes de notes, variables i operacions de transposició. Avalua l'expressió corresponent i les notes obtingudes s'afegeixen a la partitura amb el valor d'una negra.  
+
+Es produeix un error quan s'intenta reproduir un valor que no és una nota.
+
+## Invocació de procediments
+
+Una invocació d'un procediment consisteix en l'identificador d'aquest procediment seguit dels paràmetres corresponents. Els procediments no retornen valors i es poden cridar recursivament.
+
+Es produeix un error quan s'invoca un procediment no definit o el nombre de paràmetres donats no corresponen als declarats.
+
+## Condicional `if` `else`
+
+La instrucció condicional té la semàntica habitual `if condicio |: instruccions :| else |: instruccions :|`, on el bloc `else` és optatiu. Una condició admet comparacions entre enters i notes, que poden ser donats directament o derivats de l'avaluació d'una transposició, una variable o una expressió, i pot produir-se un error en el cas que s'intenti fer comparacions de valors amb un tipus diferent a aquests. 
+
+
+## Iteració `while`
+
+La instrucció iterativa té la semàntica habitual `while condicio |: instruccions :|`. La condició és igual a l'esmentada a l'apartat anterior.
