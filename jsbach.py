@@ -6,10 +6,19 @@ import sys
 import os
 import playsound
 
-input_stream = FileStream(sys.argv[1], encoding='utf-8')
+if len(sys.argv) < 2 or len(sys.argv) > 3:
+    raise Exception('Ús: python3 jsbach.py fitxer.jsb [Procediment]')
+
+nomFitxer, extensioFitxer = os.path.splitext(sys.argv[1])
+if extensioFitxer != '.jsb':
+    raise Exception("L'extensió dels fitxers per programes en JSBach ha de ser .jsb!")
+
 inici = 'Main'
 if len(sys.argv) > 2:
     inici = sys.argv[2]
+
+input_stream = FileStream(sys.argv[1], encoding='utf-8')
+
 print(input_stream)
 
 lexer = jsbachLexer(input_stream)
@@ -24,7 +33,7 @@ visitor = TreeVisitor(inici, partitura)
 visitor.visit(tree)
 notes = ' '.join(partitura)
 
-with open('partitura.lily', 'w', encoding='ascii') as f:
+with open('%s.lily' % nomFitxer, 'w') as f:
     f.write('\\version "2.22.1"\n'
             '\\score {\n'
             '    \\absolute {\n'
@@ -34,7 +43,7 @@ with open('partitura.lily', 'w', encoding='ascii') as f:
             '   \\layout { }\n'
             '   \\midi { }\n'
             '}\n' % notes)
-os.system("lilypond partitura.lily")
-os.system("timidity -Ow -o partitura.wav partitura.midi")
-os.system("ffmpeg -i partitura.wav -codec:a libmp3lame -qscale:a 2 partitura.mp3")
-playsound.playsound("partitura.mp3")
+os.system("lilypond %s.lily" % nomFitxer)
+os.system("timidity -Ow -o %s.wav %s.midi" % (nomFitxer, nomFitxer))
+os.system("ffmpeg -i %s.wav -codec:a libmp3lame -qscale:a 2 %s.mp3" % (nomFitxer, nomFitxer))
+playsound.playsound("%s.mp3" % nomFitxer)

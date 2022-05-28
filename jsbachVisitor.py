@@ -79,13 +79,18 @@ class jsbachVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by jsbachParser#llista.
-    def visitLlista(self, ctx:jsbachParser.LlistaContext):
+    # Visit a parse tree produced by jsbachParser#enters.
+    def visitEnters(self, ctx:jsbachParser.EntersContext):
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by jsbachParser#notes.
     def visitNotes(self, ctx:jsbachParser.NotesContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by jsbachParser#transposicio.
+    def visitTransposicio(self, ctx:jsbachParser.TransposicioContext):
         return self.visitChildren(ctx)
 
 
@@ -111,6 +116,11 @@ class jsbachVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by jsbachParser#enter.
     def visitEnter(self, ctx:jsbachParser.EnterContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by jsbachParser#nota.
+    def visitNota(self, ctx:jsbachParser.NotaContext):
         return self.visitChildren(ctx)
 
 

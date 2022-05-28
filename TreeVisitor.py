@@ -15,14 +15,24 @@ notaEnter = {'A0' : 0, 'B0' : 1,
 'C7' : 44, 'D7' : 45, 'E7' : 46, 'F7' : 47, 'G7' : 48, 'A7' : 49, 'B7' : 50, 
 'C8' : 51}
 
-enterNota = {0: "a,,,", 1: 'b,,,',
+enterNota = {0: 'A0', 1: 'B0',
+2: 'C1', 3: 'D1', 4: 'E1', 5: 'F1', 6: 'G1', 7: 'A1', 8: 'B1',
+9: 'C2', 10: 'D2', 11: 'E2', 12: 'F2', 13: 'G2', 14: 'A2', 15: 'B2',
+16: 'C3', 17: 'D3', 18: 'E3', 19: 'F3', 20: 'G3', 21: 'A3', 22: 'B3',
+23: 'C4', 24: 'D4', 25: 'E4', 26: 'F4', 27: 'G4', 28: 'A4', 29: 'B4',
+30: 'C5', 31: 'D5', 32: 'E5', 33: 'F5', 34: 'G5', 35: 'A5', 36: 'B5',
+37: 'C6', 38: 'D6', 39: 'E6', 40: 'F6', 41: 'G6', 42: 'A6', 43: 'B6',
+44: 'C7', 45: 'D7', 46: 'E7', 47: 'F7', 48: 'G7', 49: 'A7', 50: 'B7',
+51: 'C8'}
+
+enterOutput = {0: "a,,,", 1: 'b,,,',
 2: "c,,", 3: "d,,", 4: "e,,", 5: "f,,", 6: "g,,", 7: "a,,", 8: "b,,",
 9: "c,", 10: "d,", 11: "e,", 12: "f,", 13: "g,", 14: "a,", 15: "b,",
 16: 'c', 17: 'd', 18: 'e', 19: 'f', 20: 'g', 21: 'a', 22: 'b',
-23: "c'", 24: "d'", 25: 'E4', 26: 'F4', 27: 'G4', 28: 'A4', 29: 'B4',
+23: "c'", 24: "d'", 25: "e'", 26: "f'", 27: "g'", 28: "a'", 29: "b'",
 30: "c''", 31: "d''", 32: "e''", 33: "f''", 34: "g''", 35: "a''", 36: "b''",
 37: "c'''", 38: "d'''", 39: "e'''", 40: "f'''", 41: "g'''", 42: "a'''", 43: "b'''",
-42: "c''''", 43: "d''''", 46: "e''''", 47: "f''''", 48: "g''''", 49: "a''''", 50: "b''''",
+44: "c''''", 45: "d''''", 46: "e''''", 47: "f''''", 48: "g''''", 49: "a''''", 50: "b''''",
 51: "c'''''"}
 
 class TreeVisitor(jsbachVisitor):
@@ -32,7 +42,11 @@ class TreeVisitor(jsbachVisitor):
         self.parametres = {}
         self.pila = []
         self.inici = inici
+        print(self.inici)
         self.partitura = partitura
+
+    def isNota(self, nota):
+        return type(nota) == str and nota in notaEnter
 
     def visitRoot(self, ctx):
         l = list(ctx.getChildren())
@@ -42,7 +56,7 @@ class TreeVisitor(jsbachVisitor):
         if not self.inici in self.bloc:
             raise Exception("No s'ha definit el procediment '%s'!" % self.inici)
         self.pila.append({})
-        self.visit(self.bloc['Main'])
+        self.visit(self.bloc[self.inici])
         self.pila.pop()
 
     def visitProcediment(self, ctx):
@@ -95,12 +109,18 @@ class TreeVisitor(jsbachVisitor):
         print('')
             
     def visitReproduccio(self, ctx):
-        print('REPRODUCCIO')
         l = list(ctx.getChildren())
         notes = self.visit(l[1])
-        print(notes)
-        for n in notes:
-            self.partitura.append(enterNota[n])
+        if type(notes) == list:
+            for n in notes:
+                nota = n
+                if not self.isNota(nota):
+                    raise Exception("S'ha intentat reproduir un valor que no és una nota!")
+                self.partitura.append(enterOutput[notaEnter[nota]])
+        elif self.isNota(notes):
+            self.partitura.append(enterOutput[notaEnter[notes]])
+        else:
+            raise Exception("S'ha intentat reproduir un valor que no és una nota!")
             
     def visitInvocacio(self, ctx):
         l = list(ctx.getChildren())
@@ -148,8 +168,9 @@ class TreeVisitor(jsbachVisitor):
             else:
                 var1 = self.visit(l[0])
                 var2 = self.visit(l[2])
-                if type(var1) != int or type(var2) != int:
+                if type(var1) != int or (type(var2) != int):
                     raise Exception("Operador '%s' no suportat entre variables de tipus %s i %s" % (l[1].getText(), type(var1), type(var2)))
+                
                 token = jsbachParser.symbolicNames[l[1].getSymbol().type]
                 if token == 'SUMA':
                     return var1 + var2
@@ -158,8 +179,12 @@ class TreeVisitor(jsbachVisitor):
                 elif token == 'MULTIPLICACIO':
                     return var1 * var2
                 elif token == 'DIVISIO':
-                    return var1 / var2
+                    if var2 == 0:
+                        raise Exception("Divisió per zero!")
+                    return var1 // var2
                 elif token == 'MODUL':
+                    if var2 == 0:
+                        raise Exception("Divisió per zero!")
                     return var1 % var2
                 elif token == 'MAJOR':
                     return 1 if var1 > var2 else 0
@@ -173,11 +198,38 @@ class TreeVisitor(jsbachVisitor):
                     return 1 if var1 == var2 else 0
                 elif token == 'DIFERENT':
                     return 1 if var1 != var2 else 0
-        
+
+    def visitTransposicio(self, ctx):
+        l = list(ctx.getChildren())
+        var1 = self.visit(l[0])
+        nota = False
+        if type(var1) == str:
+            if len(var1) == 1:
+                var1 = var1 + '4'
+            if var1 in notaEnter:
+                nota = True
+                var1 = notaEnter[var1]
+        var2 = self.visit(l[2])
+        if type(var1) != int or (type(var2) != int):
+            raise Exception("Operador '%s' no suportat entre variables de tipus %s i %s!" % (l[1].getText(), type(var1), type(var2)))
+        token = jsbachParser.symbolicNames[l[1].getSymbol().type]
+        ret = 0
+        if token == 'SUMA':
+            ret = var1 + var2
+        elif token == 'RESTA':
+            ret = var1 - var2
+        if nota and ret >= 0 and ret <= 51:
+            ret = enterNota[ret]
+        return ret
+
     def visitCondicio(self, ctx):
         l = list(ctx.getChildren())
         var1 = self.visit(l[0])
+        if var1 in notaEnter:
+            var1 = notaEnter[var1]
         var2 = self.visit(l[2])
+        if var2 in notaEnter:
+            var2 = notaEnter[var2]
         if type(var1) != int or type(var2) != int:
             raise Exception("Operador '%s' no suportat entre variables de tipus %s i %s" % (l[1].getText(), type(var1), type(var2)))
         token = jsbachParser.symbolicNames[l[1].getSymbol().type]
@@ -237,14 +289,23 @@ class TreeVisitor(jsbachVisitor):
             raise Exception("Índex fora de rang!")
         return llista[index-1]       
 
-    def visitLlista(self, ctx):
+    def visitEnters(self, ctx):
         l = list(ctx.getChildren())
-        llista = []
+        enters = []
         for i in range(1, len(l)-1):
-            llista.append(int(l[i].getText()))
-        return llista
+            enters.append(int(l[i].getText()))
+        return enters
 
-    # Funcio que facilita l'acces a una variable
+    def visitNotes(self, ctx):
+        l = list(ctx.getChildren())
+        notes = []
+        for i in range(1, len(l)-1):
+            nota = l[i].getText()
+            if len(nota) == 1:
+                nota += '4'
+            notes.append(nota)
+        return notes
+
     def visitVariable(self, ctx):
         l = list(ctx.getChildren())
         nom = l[0].getText()
@@ -257,12 +318,9 @@ class TreeVisitor(jsbachVisitor):
         l = list(ctx.getChildren())
         return int(l[0].getText())
 
-    def visitNotes(self, ctx):
+    def visitNota(self, ctx):
         l = list(ctx.getChildren())
-        llista = []
-        for i in range(1, len(l)-1):
-            nota = l[i].getText()
-            if len(nota) == 1:
-                nota += '4'
-            llista.append(notaEnter[nota])
-        return llista
+        nota = l[0].getText()
+        if len(nota) == 1:
+            nota += '4'
+        return nota
