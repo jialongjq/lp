@@ -25,19 +25,19 @@ La llista `partitura` es passa per referència des de l'intèrpret i serveix per
 
 L'intèrpret s'invoca amb la comanda `python3 jsbach.py fitxer.jsb [Procediment]` (l'extensió dels fitxers per programes en JSBach és `.jsb`). Per defecte, si no s'especifica cap procediment inicial com a argument, el programa comença a executar-se pel procediment `Main`. El programa es llegeix amb el format UTF-8, per poder admetre caràcters especials de l'alfabet alemany. Un cop llegit es fa la invocació del visitador, el qual rep com a paràmetres el procediment inicial i una partitura, que no és res més que una llista a on el visitador anirà afegint les notes musicals (si n'hi ha) reproduïdes al programa. Finalment, quan l'execució del programa finalitza, es fan crides al sistema dels programes externs LilyPond, TiMidity++ i ffmpeg per generar els fitxers `.pdf`, `.midi`, `.wav` i `.mp3`, i es reprodueix aquest últim fitxer `.mp3` amb la instrucció `playsound('fitxer.mp3')` importada de la llibreria `playsound`. Els noms d'aquest fitxers coincideixen amb el nom del programa en JSBach introduit.
 
-# Especificació de JSBach
+## Especificació de JSBach
 
-## Comentaris
+### Comentaris
 
 Els comentaris s'indiquen entre triple titlles (`~~~`). Per exemple, `~~~ Kleines Program in JSBach ~~~`.
 
-## Enters
+### Enters
 
 L'intèrpret JSBach només admet nombres enters. Els operadors amb enters suportats són els aritmètics (`+`, `-`, `*`, `/`, `%`), els quals tenen la mateixa prioritat que en C, i els relacionals (`=`, `/=`, `<`, `>`, `<=`, `>=`), que retornen zero per fals i u per cert. Com que el domini admès és el d'enters, la divisió també és entera. Les expressions amb enters també admeten parèntesis i expressions dins d'expressions.  
   
 L'error que es pot produir a l'hora de treballar amb enters es la de divisó per zero.
 
-## Notes
+### Notes
 
 JSBach proporciona uns noms que representen les notes blanques d'un piano, d'acord a la notació anglosaxona. Per tant, el rang de notes comença amb A0 i acaba amb C8 (les notes C, D, E, F, G, A, B (sense número) son sinònims de C4 (Do central), D4, E4, F4, G4, A4, B4). Admeten els operadors `+` i `-` per transposar cap amunt o cap avall segons el nombre de tons indicat. Tot i que la distància entre un Si i un Do i entre un Mi i un Fa és d'un semitò, per simplicitat, s'ha considerat una distancia d'una unitat.  
 
@@ -63,7 +63,7 @@ Main |:
 :|
 ```
 
-## Llistes
+### Llistes
 
 Les llistes s'escriuen entre claus, amb els seus elements separats per blancs. Poden ser llistes d'enters o de notes, sense poder contenir mai elements de tots dos tipus simultàniament (pel mateix motiu d'abans, tot i que les notes es tracten com a enters, es fa per mantenir coherència).  
 
@@ -74,7 +74,7 @@ Les operacions per a llistes suportades son els d'afegit `l << x`, tall `8< l[i]
 - L'operació de consulta `l[i]` retorna l'`i`-èsim element de la llista `l`. La llista `l` ha de ser una variable amb una llista. L'índex `i` ha de ser un enter dins el rang [1, `#l`], que o bé s'introdueix directament o bé deriva de l'avaluació d'una variable, una expressió, una mida o una consulta. Es produeix un error quan: s'intenta consultar un element d'una variable que no és una llista, l'índex indicat no és un enter o l'índex és fora de rang.
 
 
-## Variables
+### Variables
 
 Les variables començen amb una lletra minúscula. Admet l'alfabet alemany (https://unicode-table.com/en/alphabets/german/), números i el guió baix. Una variable pot contenir un enter, una nota o una llista. Quan es vol accedir a una variable, si aquesta no ha rebut cap valor, el seu valor és zero.  
 
@@ -85,39 +85,39 @@ Main |:
 :|
 ```
 
-## Procediments
+### Procediments
 
 Els procediments, a diferència de les variables, començen amb una lletra majúscula. També admet l'alfabet alemany, números i el guió baix. Es poden definir amb paràmetres d'entrada (sense repetir noms formals) i no son res més que conjunts d'instruccions.
 
-## Assignació
+### Assignació
 
 L'assignació `<-` permet fer una assignació de variables, enters, notes, llistes (d'enters o de notes), expressions i operadors de consulta per a llistes a una variable. Com en Python, el tipatge és dinàmic. L'assignació de llistes es fa amb còpies (sense fer aliasing).
 
-## Lectura
+### Lectura
 
 La instrucció de lectura `<?>` llegeix un valor enter del canal d'entrada estàndard i l'enmagatzema a la variable especificada.
 
-## Escriptura
+### Escriptura
 
 La instrucció d'escriptura `<!>` admet variables, textos, enters, notes, llistes (d'enters o de notes), expressions i operadors de consulta per a llistes. Les llistes s'escriuen entre claus amb els elements separats entre espais. En el cas d'escriure múltiples paràmetres, s'escriuen a la mateixa línea separats per espais.
 
-## Reproducció
+### Reproducció
 
 La instrucció de reproducció `<:>` admet notes, llistes de notes, variables i operacions de transposició. Avalua l'expressió corresponent i les notes obtingudes s'afegeixen a la partitura amb el valor d'una negra.  
 
 Es produeix un error quan s'intenta reproduir un valor que no és una nota.
 
-## Invocació de procediments
+### Invocació de procediments
 
 Una invocació d'un procediment consisteix en l'identificador d'aquest procediment seguit dels paràmetres corresponents. Els procediments no retornen valors i es poden cridar recursivament.
 
 Es produeix un error quan s'invoca un procediment no definit o el nombre de paràmetres donats no corresponen als declarats.
 
-## Condicional `if` `else`
+### Condicional `if` `else`
 
 La instrucció condicional té la semàntica habitual `if condicio |: instruccions :| else |: instruccions :|`, on el bloc `else` és optatiu. Una condició admet comparacions entre enters i notes, que poden ser donats directament o derivats de l'avaluació d'una transposició, una variable o una expressió, i pot produir-se un error en el cas que s'intenti fer comparacions de valors amb un tipus diferent a aquests. 
 
 
-## Iteració `while`
+### Iteració `while`
 
 La instrucció iterativa té la semàntica habitual `while condicio |: instruccions :|`. La condició és igual a l'esmentada a l'apartat anterior.
