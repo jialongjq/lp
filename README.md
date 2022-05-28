@@ -15,7 +15,11 @@ En relació al visitador és important comentar la seva funcionalitat interna (l
 
 El visitador disposa de tres diccionaris: `notaEnter`, `enterNota` i `notaOutput`. Els diccionaris `notaEnter` i `enterNota` permeten tractar les notes com a constants enteres i viceversa, facilitant la transposició de notes. El diccionari `notaOutput` permet fer una traducció de les notes a la notació que utilitza el programa extern LilyPond.  
 
-Com a atributs privats té un booleà `executar`, un diccionari `bloc`, un diccionari `parametres`, una llista `pila`, un string `inici` i una llista `partitura`. Quan s'inicia l'intèrpret, el primer pas que ha de fer és el de guardar el context de tots els procediments presents al programa al diccionari `bloc`, de manera que es pugui fer una visita directa a qualsevol procediment del programa (fet que serà de gran ajuda per fer invocacions). Com que això implica una primera visita a totes les regles `procediment`, però sense voler executar cap instrucció, l'atribut booleà `executar` s'inicialitza a `False`, i serveix com a un flag que determina si la visita d'una regla `procediment` és per inicialitzar el diccionari `bloc` o per executar les instruccions del seu context. Una vegada finalitzada la inicialització, el booleà `executar` passarà a ser `True`. A les invocacions, com que és important saber quins paràmetres rep un procediment, 
+Com a atributs privats té un booleà `executar`, un diccionari `bloc`, un diccionari `parametres`, una llista `pila`, un string `inici` i una llista `partitura`.  
+
+Quan s'inicia l'intèrpret, el primer pas que ha de fer és el de guardar el context de tots els procediments presents al programa al diccionari `bloc`, de manera que es pugui fer una visita directa a qualsevol procediment del programa (fet que serà de gran ajuda per fer invocacions), a més dels paràmetres que rep al diccionari `parametres`. Com que això implica una primera visita a totes les regles `procediment`, però sense voler executar cap instrucció, l'atribut booleà `executar` s'inicialitza a `False`, i serveix com a un flag que determina si la visita d'una regla `procediment` és per inicialitzar el diccionari `bloc` o per executar les instruccions del seu context. Una vegada finalitzada la inicialització, el booleà `executar` passarà a ser `True` i es farà una visita al context del procediment indicat a l'string `inici`, que per defecte és `Main`. Abans de fer la invocació al procediment principal, però, s'afegeix un diccionari buit a la llista `pila`, representant el nivell del procediment al qual es crida, i servirà com a taula de símbols per aquest nivell. Quan l'execució d'un procediment finalitza, s'elimina el diccionari de la `pila`. S'aplica el mateix per les invocacions. Durant aquest procés, es poden produir errors quan: un procediment ja ha estat definit, el procediment inicial no s'ha definit o el procediment inicial s'ha definit amb paràmetres.  
+
+La llista `partitura` es passa per referència des de l'intèrpret i serveix per guardar totes les notes ja traduïdes que es van reproduint durant l'execució del programa.
 
 ## Intèrpret
 
@@ -74,7 +78,7 @@ Les operacions per a llistes suportades son els d'afegit `l << x`, tall `8< l[i]
 
 Les variables començen amb una lletra minúscula. Admet l'alfabet alemany (https://unicode-table.com/en/alphabets/german/), números i el guió baix. Una variable pot contenir un enter, una nota o una llista. Quan es vol accedir a una variable, si aquesta no ha rebut cap valor, el seu valor és zero.  
 
-Per exemple, la sortida d'aquest programa seria `0`.
+Per exemple, la sortida d'aquest programa és `0`.
 ```
 Main |:
     <!> x
