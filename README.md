@@ -3,6 +3,8 @@ Aquesta pàgina descriu la implementació feta per la pràctica de GEI-LP (edici
 
 # Característiques bàsiques
 
+## Gramàtica
+
 ## Enters
 L'intèrpret JSBach només admet nombres enters. Els operadors amb enters suportats són els aritmètics (`+`, `-`, `*`, `/`, `%`), els quals tenen la mateixa prioritat que en C, i els relacionals (`=`, `/=`, `<`, `>`, `<=`, `>=`), que retornen zero per fals i u per cert. Com que el domini admès és el d'enters, la divisió també és entera.  
   
@@ -34,6 +36,14 @@ Main |:
 ```
 
 ## Llistes
+Les llistes s'escriuen entre claus, amb els seus elements separats per blancs. Poden ser llistes d'enters o de notes, sense poder contenir mai elements de tots dos tipus simultàniament (pel mateix motiu d'abans, tot i que les notes es tracten com a enters, es fa per mantenir coherència).  
+
+Les operacions per a llistes suportades son els d'afegit `l << x`, tall `8< l[i]`, consulta `l[i]` i mida `#l`:
+- L'operació  d'afegit `l << x` afegeix l'element `x` a la llista `l`. La llista `l` ha de ser una variable amb una llista. L'element `x` pot ser, en esencia, un enter o una nota, que o bé s'introdueix directament o bé deriva de l'avaluació d'una variable, una transposició, una expressió, una consulta o una mida. Es produeix un error quan: la variable a la qual es vol afegir l'element no és una llista, s'intenta afegir una llista a una altra llista, o bé s'intenta afegir una nota a una llista d'enters o un enter a una llista de notes.
+- L'operació de tall `8< l[i]` elimina l'`i`-èsim element de la llista `l`. La llista `l` ha de ser una variable amb una llista. L'índex `i` ha de ser un enter dins el rang [1, `#l`], que o bé s'introdueix directament o bé deriva de l'avaluació d'una variable, una expressió, una mida o una consulta. Es produeix un error quan: s'intenta consultar un element d'una variable que no és una llista, l'índex indicat no és un enter o l'índex és fora de rang.
+- L'operació de consulta `l[i]` retorna l'`i`-èsim element de la llista `l`. La llista `l` ha de ser una variable amb una llista. L'índex `i` ha de ser un enter dins el rang [1, `#l`], que o bé s'introdueix directament o bé deriva de l'avaluació d'una variable, una expressió, una mida o una consulta. Es produeix un error quan: s'intenta consultar un element d'una variable que no és una llista, l'índex indicat no és un enter o l'índex és fora de rang.
+- L'operació de mida `#l` retorna la llargada de la llista `l`. La llista `l` ha de ser una variable amb una llista. Es produeix un error quan s'intenta  consultar la mida d'una variable que no és una llista.
+
 
 ## Variables
 Les variables començen amb una lletra minúscula. Admet l'alfabet alemany (https://unicode-table.com/en/alphabets/german/), números i el guió baix. Una variable pot contenir un enter, una nota o una llista. Quan es vol accedir a una variable, si aquesta no ha rebut cap valor, el seu valor és zero.  
