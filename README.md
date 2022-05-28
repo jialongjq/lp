@@ -36,8 +36,6 @@ Els comentaris s'indiquen entre triple titlles (`~~~`). Per exemple, `~~~ Kleine
 L'intèrpret JSBach només admet nombres enters. Els operadors amb enters suportats són els aritmètics (`+`, `-`, `*`, `/`, `%`), els quals tenen la mateixa prioritat que en C, i els relacionals (`=`, `/=`, `<`, `>`, `<=`, `>=`), que retornen zero per fals i u per cert. Com que el domini admès és el d'enters, la divisió també és entera. Les expressions amb enters també admeten parèntesis i expressions dins d'expressions.  
   
 L'error que es pot produir a l'hora de treballar amb enters es la de divisó per zero.
-
-A continuació es mostra un exemple d'un programa que implementa l'ús d'expressions amb enters, seguit de la seva sortida.
 ```
 Main |:
     n <- 1 + 1
@@ -56,8 +54,6 @@ Main |:
 JSBach proporciona uns noms que representen les notes blanques d'un piano, d'acord a la notació anglosaxona. Per tant, el rang de notes comença amb A0 i acaba amb C8 (les notes C, D, E, F, G, A, B (sense número) son sinònims de C4 (Do central), D4, E4, F4, G4, A4, B4). Admeten els operadors `+` i `-` per transposar cap amunt o cap avall segons el nombre de tons indicat. Tot i que la distància entre un Si i un Do i entre un Mi i un Fa és d'un semitò, per simplicitat, s'ha considerat una distancia d'una unitat.  
 
 Internament, encara que les notes es tracten com a constants per a enters, aquestes es guarden com a cadenes de caràcters per poder mantenir coherència a l'hora de fer servir instruccions d'escriptura (no seria molt lògic assignar un C4 a una variable i que la seva escriptura fos 23!). Ara bé, la transposició d'una nota pot resultar en un valor fora del rang [0, 51] i, com a conseqüència, aquest valor passaria a ser considerat com a un enter sense poder tornar a convertir-se en una nota, encara que es torni a aplicar una transposició que el deixi dins del rang de notes (queda com a responsabilitat del programador evitar això).  
-  
-A continuació es mostra un exemple d'un programa que implementa l'ús de les notes, seguit de la seva sortida.
 ```
 Main |:
     notes <- {C D E F G A B}
@@ -118,8 +114,6 @@ A4
 ### Variables
 
 Les variables començen amb una lletra minúscula. Admet l'alfabet alemany (https://unicode-table.com/en/alphabets/german/), números i el guió baix. Una variable pot contenir un enter, una nota o una llista. Quan es vol accedir a una variable, si aquesta no ha rebut cap valor, el seu valor és zero.  
-
-A continuació es mostra un exemple d'un programa que utilitza variables amb la seva corresponent sortida.
 ```
 Main |:
     b <- 10
@@ -158,14 +152,68 @@ Es produeix un error quan s'intenta reproduir un valor que no és una nota.
 ### Invocació de procediments
 
 Una invocació d'un procediment consisteix en l'identificador d'aquest procediment seguit dels paràmetres corresponents. Els procediments no retornen valors i es poden cridar recursivament.
+```
+Main |:
+    Escriu 5
+:|
 
+Escriu a |:
+    if a /= 0 |:
+        Escriu a - 1
+    :|
+    <!> "Escric" a
+:|
+```
+```
+Escric 0
+Escric 1
+Escric 2
+Escric 3
+Escric 4
+Escric 5
+```
 Es produeix un error quan s'invoca un procediment no definit o el nombre de paràmetres donats no corresponen als declarats.
 
 ### Condicional `if` `else`
 
-La instrucció condicional té la semàntica habitual `if condicio |: instruccions :| else |: instruccions :|`, on el bloc `else` és optatiu. Una condició admet comparacions entre enters i notes, que poden ser donats directament o derivats de l'avaluació d'una transposició, una variable o una expressió, i pot produir-se un error en el cas que s'intenti fer comparacions de valors amb un tipus diferent a aquests. 
+La instrucció condicional té la semàntica habitual `if condicio |: instruccions :| else |: instruccions :|`, on el bloc `else` és optatiu. Una condició admet comparacions entre enters i notes, que poden ser donats directament o derivats de l'avaluació d'una transposició, una variable o una expressió, i pot produir-se un error en el cas que s'intenti fer comparacions de valors amb un tipus diferent a aquests.
+```
+Main |:
+    if 0 < 10 |:
+        <!> "Cert!"
+    :|
+    if 0 > 10 |:
+        <!> "Cert!"
+    :| else |:
+        <!> "Fals!"
+    :|
+:|
+```
+```
+Cert!
+Fals!
+```
 
 
 ### Iteració `while`
 
 La instrucció iterativa té la semàntica habitual `while condicio |: instruccions :|`. La condició és igual a l'esmentada a l'apartat anterior.
+```
+Main |:
+    nota <- A0 
+    while nota <= A1 |:
+        <!> nota
+        nota <- nota + 1
+    :|
+:|
+```
+```
+A0
+B0
+C1
+D1
+E1
+F1
+G1
+A1
+```
