@@ -1,13 +1,11 @@
 # JSBach
 Aquesta pàgina descriu la implementació feta per la pràctica de GEI-LP (edició 2021-2022 Q2), el doble intèrpret de JSBach.
 
-## Gramàtica ANTLR
+## Gramàtica
 
 La gramàtica proposada consisteix en un conjunt de procediments com a arrel, on cada procediment és un conjunt d'instruccions.  
 
-Cal diferenciar les regles que internament retornen un valor amb les que no en retornen cap. Aquelles que no retornen cap valor son considerades instruccions (`assignacio`, `lectura`, `escriptura`, `reproduccio`, `invocacio`, `condicional`, `iteracio`, `afegit` i `tall`). Les que sí en retornen un valor (`mida`, `consulta`, `enters`, `notes`, `transposicio`, `expressio`, `condicio`, `text`, `variable`, `enter` i `nota`) s'utilitzen per complementar les instruccions segons les necessitats de cadascuna, les quals s'explicaran més endavant.  
-
-Els tokens s'han utilitzat principalment per permetre una millor llegibilitat de la gramàtica. Els que es consulten al visitador son els operadors aritmètics i relacionals.
+Cal diferenciar les regles que internament retornen un valor amb les que no en retornen cap. Aquelles que no retornen cap valor son considerades instruccions (`assignacio`, `lectura`, `escriptura`, `reproduccio`, `invocacio`, `condicional`, `iteracio`, `afegit` i `tall`). Les que sí en retornen un valor (`mida`, `consulta`, `enters`, `notes`, `transposicio`, `expressio`, `condicio`, `text`, `variable`, `enter` i `nota`) s'utilitzen per complementar les instruccions segons les necessitats de cadascuna, les quals s'explicaran més endavant. Els tokens s'han utilitzat principalment per permetre una millor llegibilitat de la gramàtica. Els que es consulten al visitador son els operadors aritmètics i relacionals.
 
 Un tret que pot semblar confús és l'ús alternat de la regla `variable` i el token `VARIABLE` a les regles. La diferència clau és que el token `VARIABLE` s'utilitza quan no és necessari l'accés al valor d'una variable. A més a més, les regles `variable`, `enter`, `nota` i `text`, tot i semblar innecessaris perquè no són res més que un token, son realment molt útils a l'hora de fer resolucions perquè internament es poden fer visites directament sense importar els tipus de node, fet que permet estalviar molta lògica.
 
@@ -15,7 +13,7 @@ Un tret que pot semblar confús és l'ús alternat de la regla `variable` i el t
 
 ## Intèrpret
 
-L'intèrpret s'invoca amb la comanda `python3 jsbach.py fitxer.jsb [Procediment]` (l'extensió dels fitxers per programes en JSBach és `.jsb`). Per defecte, si no s'especifica cap procediment inicial com a argument, el programa comença a executar-se pel procediment `Main`. El programa es llegeix amb el format UTF-8, per poder admetre caràcters especials de l'alfabet alemany. Un cop llegit es fa la invocació del visitador, el qual rep com a paràmetres el procediment inicial i una partitura, que no és res més que una llista a on el visitador anirà afegint les notes musicals (si n'hi ha) reproduïdes al programa. Finalment, quan l'execució del programa finalitza, es fan crides al sistema dels programes externs LilyPond, TiMidity++ i ffmpeg per generar els arxius `.pdf`, `.midi`, `.wav` i `.mp3`, i es reprodueix aquest últim arxiu `.mp3` amb la instrucció `playsound('fitxer.mp3')` importada de la llibreria `playsound`. Els noms d'aquest fitxers coincideixen amb el nom del programa en JSBach introduit.
+L'intèrpret s'invoca amb la comanda `python3 jsbach.py fitxer.jsb [Procediment]` (l'extensió dels fitxers per programes en JSBach és `.jsb`). Per defecte, si no s'especifica cap procediment inicial com a argument, el programa comença a executar-se pel procediment `Main`. El programa es llegeix amb el format UTF-8, per poder admetre caràcters especials de l'alfabet alemany. Un cop llegit es fa la invocació del visitador, el qual rep com a paràmetres el procediment inicial i una partitura, que no és res més que una llista a on el visitador anirà afegint les notes musicals (si n'hi ha) reproduïdes al programa. Finalment, quan l'execució del programa finalitza, es fan crides al sistema dels programes externs LilyPond, TiMidity++ i ffmpeg per generar els fitxers `.pdf`, `.midi`, `.wav` i `.mp3`, i es reprodueix aquest últim fitxer `.mp3` amb la instrucció `playsound('fitxer.mp3')` importada de la llibreria `playsound`. Els noms d'aquest fitxers coincideixen amb el nom del programa en JSBach introduit.
 
 # Especificació de JSBach
 
