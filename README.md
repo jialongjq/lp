@@ -23,7 +23,7 @@ La llista `partitura` es passa per referència des de l'intèrpret i serveix per
 
 ## Intèrpret
 
-L'intèrpret s'invoca amb la comanda `python3 jsbach.py fitxer.jsb [Procediment]` (l'extensió dels fitxers per programes en JSBach és `.jsb`). Per defecte, si no s'especifica cap procediment inicial com a argument, el programa comença a executar-se pel procediment `Main`. El programa es llegeix amb el format UTF-8, per poder admetre caràcters especials de l'alfabet alemany. Un cop llegit es fa la invocació del visitador, el qual rep com a paràmetres el procediment inicial i una partitura, que no és res més que una llista a on el visitador anirà afegint les notes musicals (si n'hi ha) reproduïdes al programa. Finalment, quan l'execució del programa finalitza, es fan crides al sistema dels programes externs LilyPond, TiMidity++ i ffmpeg per generar els fitxers `.pdf`, `.midi`, `.wav` i `.mp3`, i es reprodueix aquest últim fitxer `.mp3` amb la instrucció `playsound('fitxer.mp3')` importada de la llibreria `playsound`. Els noms d'aquest fitxers coincideixen amb el nom del programa en JSBach introduit.
+L'intèrpret s'invoca amb la comanda `python3 jsbach.py fitxer.jsb [Procediment]` (l'extensió dels fitxers per programes en JSBach és `.jsb`). Per defecte, si no s'especifica cap procediment inicial com a argument, el programa comença a executar-se pel procediment `Main`. El programa es llegeix amb el format UTF-8, per poder admetre caràcters especials de l'alfabet alemany. Un cop llegit es fa la invocació del visitador, el qual rep com a paràmetres el procediment inicial i una partitura, que no és res més que una llista a on el visitador anirà afegint les notes musicals (si n'hi ha) reproduïdes al programa. Finalment, quan l'execució del programa finalitza, es fan crides al sistema dels programes externs LilyPond, TiMidity++ i FFmpeg per generar els fitxers `.pdf`, `.midi`, `.wav` i `.mp3`, i es reprodueix aquest últim fitxer `.mp3` amb la instrucció `playsound('fitxer.mp3')` importada de la llibreria `playsound`. Els noms d'aquest fitxers coincideixen amb el nom del programa en JSBach introduit.
 
 ## Especificació de JSBach
 
@@ -37,7 +37,19 @@ L'intèrpret JSBach només admet nombres enters. Els operadors amb enters suport
   
 L'error que es pot produir a l'hora de treballar amb enters es la de divisó per zero.
 
-A continuació es mostra un exemple amb l'ús d'expressions amb enters.
+A continuació es mostra un exemple d'un programa que implementa l'ús d'expressions amb enters, seguit de la seva sortida.
+```
+Main |:
+    n <- 1 + 1
+    <!> (((n * (20 - n) + 10) - 10) / 2) % 10
+    b <- (n = 2) + 2 * (n < 5)
+    <!> n b n > b
+:|
+```
+```
+8
+2 3 0
+```
 
 ### Notes
 
@@ -45,7 +57,7 @@ JSBach proporciona uns noms que representen les notes blanques d'un piano, d'aco
 
 Internament, encara que les notes es tracten com a constants per a enters, aquestes es guarden com a cadenes de caràcters per poder mantenir coherència a l'hora de fer servir instruccions d'escriptura (no seria molt lògic assignar un C4 a una variable i que la seva escriptura fos 23!). Ara bé, la transposició d'una nota pot resultar en un valor fora del rang [0, 51] i, com a conseqüència, aquest valor passaria a ser considerat com a un enter sense poder tornar a convertir-se en una nota, encara que es torni a aplicar una transposició que el deixi dins del rang de notes (queda com a responsabilitat del programador evitar això).  
   
-A continuació es mostra un exemple de l'ús de les notes.
+A continuació es mostra un exemple d'un programa que implementa l'ús de les notes, seguit de la seva sortida.
 ```
 Main |:
     notes <- {C D E F G A B}
