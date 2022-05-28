@@ -1,4 +1,4 @@
-# JSBach
+# El doble intèrpret de JSBach
 Aquesta pàgina descriu la implementació feta per la pràctica de GEI-LP (edició 2021-2022 Q2), el doble intèrpret de JSBach.
 
 ## Gramàtica
@@ -23,7 +23,7 @@ La llista `partitura` es passa per referència des de l'intèrpret i serveix per
 
 ## Intèrpret
 
-L'intèrpret s'invoca amb la comanda `python3 jsbach.py fitxer.jsb [Procediment]` (l'extensió dels fitxers per programes en JSBach és `.jsb`). Per defecte, si no s'especifica cap procediment inicial com a argument, el programa comença a executar-se pel procediment `Main`. El programa es llegeix amb el format UTF-8, per poder admetre caràcters especials de l'alfabet alemany. Un cop llegit es fa la invocació del visitador, el qual rep com a paràmetres el procediment inicial i una partitura, que no és res més que una llista a on el visitador anirà afegint les notes musicals (si n'hi ha) reproduïdes al programa. Finalment, quan l'execució del programa finalitza, es fan crides al sistema dels programes externs LilyPond, TiMidity++ i FFmpeg per generar els fitxers `.pdf`, `.midi`, `.wav` i `.mp3`, i es reprodueix aquest últim fitxer `.mp3` amb la instrucció `playsound('fitxer.mp3')` importada de la llibreria `playsound`. Els noms d'aquest fitxers coincideixen amb el nom del programa en JSBach introduit.
+L'intèrpret s'invoca amb la comanda `python3 jsbach.py fitxer.jsb [Procediment]` (l'extensió dels fitxers per programes en JSBach és `.jsb`). Per defecte, si no s'especifica cap procediment inicial com a argument, el programa comença a executar-se pel procediment `Main`. El programa es llegeix amb el format UTF-8, per poder admetre caràcters especials de l'alfabet alemany. Un cop llegit es fa la invocació del visitador, el qual rep com a paràmetres el procediment inicial i una partitura, que no és res més que una llista a on el visitador anirà afegint les notes musicals (si n'hi ha) reproduïdes al programa. Finalment, quan l'execució del programa finalitza, es fan crides al sistema dels programes externs LilyPond, TiMidity++ i FFmpeg per generar els fitxers `.pdf`, `.midi`, `.wav` i `.mp3`. Els noms d'aquest fitxers coincideixen amb el nom del programa en JSBach introduit.
 
 ## Especificació de JSBach
 
@@ -42,13 +42,13 @@ A continuació es mostra un exemple d'un programa que implementa l'ús d'express
 Main |:
     n <- 1 + 1
     <!> (((n * (20 - n) + 10) - 10) / 2) % 10
-    b <- (n = 2) + 2 * (n < 5)
-    <!> n b n > b
+    b <- (n = 2) + 2 * (n < 5) + 0 /= 0
+    <!> n b n >= b
 :|
 ```
 ```
 8
-2 3 0
+2 1 1
 ```
 
 ### Notes
@@ -95,16 +95,42 @@ Les operacions per a llistes suportades son els d'afegit `l << x`, tall `8< l[i]
 - L'operació de mida `#l` retorna la llargada de la llista `l`. La llista `l` ha de ser una variable amb una llista. Es produeix un error quan s'intenta  consultar la mida d'una variable que no és una llista.
 - L'operació de consulta `l[i]` retorna l'`i`-èsim element de la llista `l`. La llista `l` ha de ser una variable amb una llista. L'índex `i` ha de ser un enter dins el rang [1, `#l`], que o bé s'introdueix directament o bé deriva de l'avaluació d'una variable, una expressió, una mida o una consulta. Es produeix un error quan: s'intenta consultar un element d'una variable que no és una llista, l'índex indicat no és un enter o l'índex és fora de rang.
 
+```
+Main |:
+    l1 <- {1 2 3 4 5}
+    l2 <- l1
+    l3 <- {C}
+    <!> l1 #l1 l1[#l1 - 2]
+    8< l1[#l1]
+    8< l1[1]
+    l1 << 6
+    <!> l1 l2 l1[1] + l2[2]
+    <!> l3[1] + 5
+:|
+```
+```
+{1 2 3 4 5} 5 3
+{2 3 4 6} {1 2 3 4 5} 4
+A4
+```
+
 
 ### Variables
 
 Les variables començen amb una lletra minúscula. Admet l'alfabet alemany (https://unicode-table.com/en/alphabets/german/), números i el guió baix. Una variable pot contenir un enter, una nota o una llista. Quan es vol accedir a una variable, si aquesta no ha rebut cap valor, el seu valor és zero.  
 
-Per exemple, la sortida d'aquest programa és `0`.
+A continuació es mostra un exemple d'un programa que utilitza variables amb la seva corresponent sortida.
 ```
 Main |:
-    <!> x
+    b <- 10
+    c <- A0
+    d <- {1 2 3 4 5 6 7}
+    e <- {C D E F G A B}
+    <!> a b c d e
 :|
+```
+```
+0 10 A0 {1 2 3 4 5 6 7} {C4 D4 E4 F4 G4 A4 B4}
 ```
 
 ### Procediments
