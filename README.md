@@ -11,7 +11,7 @@ L'error que es pot produir a l'hora de treballar amb enters es la de divisó per
 ## Notes
 JSBach proporciona uns noms que representen les notes blanques d'un piano, d'acord a la notació anglosaxona. Per tant, el rang de notes comença amb A0 i acaba amb C8 (les notes C, D, E, F, G, A, B (sense número) son sinónims de C4 (Do central), D4, E4, F4, G4, A4, B4). Admeten els operadors `+` i `-` per transposar cap amunt o cap avall segons el nombre de tons indicat.  
 
- Internament, tot i que quan es treballa amb notes es tracten com a constants per a enters (no tindria massa sentit assignar un C4 a una variable i que la seva escriptura donés )  
+Internament, encara que les notes es tracten com a constants per a enters, aquestes es guarden com a cadenes de caràcters per poder mantenir coherència a l'hora de fer servir instruccions d'escriptura (no seria molt lògic assignar un C4 a una variable i que la seva escriptura fos [NUMERO]!). Ara bé, la transposició d'una nota pot
   
 Per exemple, 
 ```
