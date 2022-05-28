@@ -15,6 +15,8 @@ Un tret que pot semblar confús és l'ús alternat de la regla `variable` i el t
 
 ## Intèrpret
 
+L'intèrpret s'invoca amb la comanda `python3 jsbach.py fitxer.jsb [Procediment]` (l'extensió dels fitxers per programes en JSBach és `.jsb`). Per defecte, si no s'especifica cap procediment inicial com a argument, el programa comença a executar-se pel procediment `Main`. El programa es llegeix amb el format UTF-8, per poder admetre caràcters especials de l'alfabet alemany. Un cop llegit es fa la invocació del visitador, el qual rep com a paràmetres el procediment inicial i una partitura, que no és res més que una llista a on el visitador anirà afegint les notes musicals (si n'hi ha) reproduïdes al programa. Finalment, quan l'execució del programa finalitza, es fan crides al sistema dels programes externs LilyPond, TiMidity++ i ffmpeg per generar els arxius `.pdf`, `.midi`, `.wav` i `.mp3`, i es reprodueix aquest últim arxiu `.mp3` amb la instrucció `playsound('fitxer.mp3')` importada de la llibreria `playsound`. Els noms d'aquest fitxers coincideixen amb el nom del programa en JSBach introduit.
+
 # Especificació de JSBach
 
 ## Comentaris
