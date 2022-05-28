@@ -5,33 +5,29 @@ procediment : ID VARIABLE* '|:' instruccio* ':|';
 
 instruccio : (assignacio | lectura | escriptura | reproduccio | invocacio | condicional | iteracio | afegit | tall) ;
 
-assignacio : VARIABLE ASSIGNACIO (variable | enter | nota | enters | notes | transposicio | expressio | mida | consulta);
+assignacio : VARIABLE ASSIGNACIO (variable | enter | nota | enters | notes | transposicio | mida | consulta | expressio );
 
 lectura : LECTURA VARIABLE ;
 
-escriptura : ESCRIPTURA (text | variable | enter | nota | enters | notes | transposicio | expressio | mida | consulta)+ ;
+escriptura : ESCRIPTURA (text | variable | enter | nota | enters | notes | transposicio | mida | consulta | expressio )+ ;
 
-reproduccio : REPRODUCCIO (nota | notes | variable) ;
+reproduccio : REPRODUCCIO (nota | notes | variable | transposicio) ;
 
-invocacio : ID (variable | enter | expressio | mida | consulta)* ;
+invocacio : ID (variable | enter | mida | consulta | expressio)* ;
 
 condicional : 'if' condicio '|:' instruccio+ ':|' ('else' '|:' instruccio+ ':|')?;
 
 iteracio : 'while' condicio '|:' instruccio+ ':|' ;
 
-afegit : variable '<<' expressio;
+afegit : variable '<<' (variable | enter | nota | enters | notes | transposicio | mida | consulta | expressio) ;
 
-tall : '8<' variable '[' (variable | enter | expressio | mida | consulta) ']' ;
+tall : '8<' variable '[' (variable | enter | mida | consulta | expressio ) ']' ;
 
 mida : '#' variable ;
 
-consulta : variable '[' (variable | enter | expressio | mida | consulta) ']' ;
+consulta : variable '[' (variable | enter | mida | consulta | expressio ) ']' ;
 
-enters : '{' ENTER* '}' ;
-
-notes : '{' NOTA* '}' ;
-
-transposicio : (nota | variable) (SUMA | RESTA) enter ;
+transposicio : (nota | variable | consulta) (SUMA | RESTA) enter ;
 
 expressio : '(' expressio ')'
           | expressio (MULTIPLICACIO | DIVISIO | MODUL) expressio
@@ -39,19 +35,27 @@ expressio : '(' expressio ')'
           | expressio (MAJOR | MAJORIGUAL | MENOR | MENORIGUAL | IGUAL | DIFERENT) expressio
     	  | enter
     	  | variable
+          | mida
+          | consulta
     	  ;
     	  
-condicio : (nota | variable) (MAJOR | MAJORIGUAL | MENOR | MENORIGUAL | IGUAL | DIFERENT) (nota | variable)
+condicio : (nota | variable | transposicio) (MAJOR | MAJORIGUAL | MENOR | MENORIGUAL | IGUAL | DIFERENT) (nota | variable | transposicio)
          | expressio (MAJOR | MAJORIGUAL | MENOR | MENORIGUAL | IGUAL | DIFERENT) expressio
          ;
-    	  
-text : TEXT ;
+
+enters : '{' enter* '}' ;
+
+notes : '{' nota* '}' ;
 
 variable : VARIABLE ;
 
 enter : ENTER ;
 
 nota : NOTA ;
+
+text : TEXT ;
+
+// TOKENS
 
 ESCRIPTURA : '<!>' ;
 LECTURA : '<?>' ;
