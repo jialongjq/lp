@@ -1,5 +1,5 @@
 # El doble intèrpret de JSBach
-Aquesta pàgina descriu la implementació feta per la pràctica de GEI-LP (edició 2021-2022 Q2), el doble intèrpret de JSBach.
+Aquesta pàgina descriu la implementació feta per la pràctica de GEI-LP (edició 2021-2022 Q2), el [doble intèrpret de JSBach](https://github.com/jordi-petit/lp-jsbach-2022).
 
 ## Gramàtica
 
